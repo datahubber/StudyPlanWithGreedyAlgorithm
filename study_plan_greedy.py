@@ -23,29 +23,41 @@ class CourseLevel:
     def __lt__(self, other):
         return self.level < other.level
 
-def get_course_schedule(courses, total_hours):
+def get_course_schedule(courses, total_hours, interviewee_proficiency):
     result = []
     course_heap_dict = {}
     total_value_possible = 0
+
+    # This for loop is taking O(n) where n is len courses list of dict
     for course in courses:
         total_value_possible += course["value"]
         if course["course"] in course_heap_dict.keys():
             course_heap_dict[course["course"]].append(CourseLevel(course))
         else:
             course_heap_dict[course["course"]] = [CourseLevel(course)]
+
+     # This loop takes O(m*log(l)) m: number of courses, l: max level of course
     course_heap = []
-    for heap in course_heap_dict.values():
+    for course_name, heap in course_heap_dict.items():
         heapq.heapify(heap)
         course = heapq.heappop(heap)
-        course_heap.append(CourseValue({"course":course.course, "level":course.level, "hours":course.hours, "value":course.value}))
+        while interviewee_proficiency[course_name] >= course.level:
+            if len(heap) == 0:
+                course = None
+                break
+            course = heapq.heappop(heap)
+        if course is not None:
+            course_heap.append(CourseValue({"course":course.course, "level":course.level, "hours":course.hours, "value":course.value}))
+
     heapq.heapify(course_heap)
     num_course_level = len(courses)
     hours_invested = 0
     max_value_acquired = 0
+    # this loop takes O(2*n*log(m))
     while hours_invested < total_hours and num_course_level>0:
         max_value_course = heapq.heappop(course_heap)
         time_left_for_interview = total_hours - hours_invested
-        if max_value_course.hours > time_left_for_interview:
+        if max_value_course.hours >= time_left_for_interview:
             #course_value_acquired = max_value_course.value * time_left_for_interview / course.hours
             hours_invested += time_left_for_interview
             max_value_acquired += round((time_left_for_interview / course.hours)*max_value_course.value, 2)
@@ -69,8 +81,12 @@ def get_course_schedule(courses, total_hours):
         if  len(course_heap_dict[max_value_course.course]) > 0:
             course = heapq.heappop(course_heap_dict[max_value_course.course])
             heapq.heappush(course_heap, CourseValue({"course":course.course, "level":course.level, "hours":course.hours, "value":course.value}))
-    pcnt_preparation = round((max_value_acquired / total_value_possible)*100,2)
+    pcnt_preparation = (max_value_acquired / total_value_possible)*100
     return result, pcnt_preparation
+
+
+# Total Time Complexity = O(n +mlog(l) + nlog(m)) = O(nlog(m))
+# Space Complexity = O(n)
 
 if __name__ == "__main__":
     total_hrs = 250
@@ -151,7 +167,14 @@ if __name__ == "__main__":
 
     ]
 
-    study_plan, pcnt_preparation = get_course_schedule(courses, total_hrs)
+    interviewee_proficiency = {
+    'Python': 1,
+    'AWS': 2,
+    'ML':0,
+    'SQL': 0
+                          }
+
+    study_plan, pcnt_preparation = get_course_schedule(courses, total_hrs, interviewee_proficiency)
     print("Plan for the interview looks like below(time in hrs):")
     pp.pprint(study_plan)
     print(f"Percentage chance to crack the interview with {total_hrs}\
