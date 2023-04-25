@@ -99,16 +99,9 @@ class dataPreprocessing:
 				classes_list.append({"course":s, "level":2,'hours':50, 'value':base_importance[s]*0.9, "extra": False})
 				classes_list.append({"course":s, "level":3,'hours':60, 'value':base_importance[s]*0.8, "extra": False})
 				
-# 		print(classes_list)
-		classses_df=pd.DataFrame(classes_list, columns=["course", "level","hours", "value" ])
+
 		return classes_list
 				
-				
-# 				
-# 				classes_list.append([s, level, base_importance[s] ])
-# 			print(s,skillsRequired[s],  base_importance[s])
-		
-
 		
 def main(jobTitle="analyst 1",csv=False):
 	d = dataPreprocessing()

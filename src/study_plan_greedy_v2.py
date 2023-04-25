@@ -107,14 +107,17 @@ if __name__ == "__main__":
 	course_data = d.skill_times
 
 
+
 	####user input 
 	print("Please choose a role from the following list:")
 	for role in d.roles:
 		print(role)
 		
+		
+		
 	###The code below can be commented/uncommented out if you want to make this more interactive.
-# 	chosen_role = "analyst 1"
-# 	total_hrs = 1000
+ 	#chosen_role = "analyst 1"
+ 	#total_hrs = 1000
 	chosen_role = input("\nEnter the role you are interested in: ")
 	total_hrs = int(input("Enter the number of preparation hours: "))
 
@@ -125,22 +128,26 @@ if __name__ == "__main__":
 	interviewee_proficiency={}
 	for i in unique_courses:
 		interviewee_proficiency[i]=0
+		
 		###The code below can be uncommented out if you want to make this more interactive.
-# 		proficiency =input(f"On a scale of 0-3 how proficient are you at {i} ")
-# 		if (int(proficiency)>3) or (int(proficiency)<0):
-# 			proficiency =input(f"Try again. On a scale of 0-3 how proficient are you at {i} ")
-# 		interviewee_proficiency[i]=proficiency
+ 		#proficiency =input(f"On a scale of 0-3 how proficient are you at {i} ")
+ 		#if (int(proficiency)>3) or (int(proficiency)<0):
+ 		#	proficiency =input(f"Try again. On a scale of 0-3 how proficient are you at {i} ")
+ 		#interviewee_proficiency[i]=proficiency
 	
 	###Cleans system
 	os.system('cls' if os.name == 'nt' else 'clear')
 
 
-	study_plan, pcnt_preparation = get_course_schedule(courses, total_hrs, interviewee_proficiency)
+	#Prints the final screen
 	print("Plan for the interview looks like below(time in hrs):")
-	required_courses = [course["course"]+ " " + str(course["level"])+" : "+ str(course["hours_invested"]) +"(h)" for course in study_plan if course["extra"]==False ]
 	print(f'\nThese are the classes you need to take in order: \n')
+	study_plan, pcnt_preparation = get_course_schedule(courses, total_hrs, interviewee_proficiency)
+	required_courses = [course["course"]+ " " + str(course["level"])+" : "+ str(course["hours_invested"]) +"(h)" for course in study_plan if course["extra"]==False ]
 	for i in required_courses:
 		print(i)
+		
+	#Prints info about the extra courses
 	if pcnt_preparation>100:
 			extra_courses = [course["course"]+ " " + str(course["level"]) for course in study_plan if course["extra"]==True ]
 			print(f"\nPercentage chance to crack the interview with {total_hrs} hours with the plan is: 100%")
@@ -151,8 +158,8 @@ if __name__ == "__main__":
 		print(f"\nPercentage chance to crack the interview with {total_hrs} hours with the plan is: {pcnt_total_value_acquired}%")
 
 
-
-# 	pp.pprint(study_plan)
+	###Uncomment this out if you want to keep the old way of output
+ 	#pp.pprint(study_plan)
 
 	
 
